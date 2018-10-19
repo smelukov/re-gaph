@@ -4,9 +4,7 @@ import { distance } from './utils.js';
 export default class DnD extends EventEmitter {
     constructor(engine, target) {
         super();
-
         this.engine = engine;
-
         this.mouseDownHandler = (e) => {
             const worldPosition = engine.screenToWorld(e.data.x, e.data.y);
 
@@ -60,6 +58,10 @@ export default class DnD extends EventEmitter {
         this.setTarget(target);
     }
 
+    cancel() {
+        this.isDragging = false;
+    }
+
     setTarget(target) {
         if (this.target) {
             this.target.off('pointer-start', this.mouseDownHandler);
@@ -79,12 +81,10 @@ export default class DnD extends EventEmitter {
     }
 
     dispose() {
-        if (!this.disposed) {
-            this.engine.stage.off('pointer-move', this.stageMouseMoveHandler);
-            this.engine.stage.off('pointer-end', this.mouseUpHandler);
-            this.engine = null;
-            this.setTarget(null);
-            super.dispose();
-        }
+        this.engine.stage.off('pointer-move', this.stageMouseMoveHandler);
+        this.engine.stage.off('pointer-end', this.mouseUpHandler);
+        this.engine = null;
+        this.setTarget(null);
+        super.dispose();
     }
 }

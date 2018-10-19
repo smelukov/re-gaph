@@ -1,4 +1,4 @@
-const degToRad = 180 / Math.PI;
+import { degToRad } from './utils.js';
 
 export default class TransformationMatrix {
     static identity() {

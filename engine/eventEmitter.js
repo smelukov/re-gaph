@@ -1,10 +1,13 @@
-export class Event {
+import Disposable from './disposable.js';
+
+export class Event extends Disposable {
     constructor(name, data = {}) {
+        super();
+
         this.name = name;
         this.data = data;
         this.target = null;
         this.stopped = false;
-        this.disposed = false;
     }
 
     stop() {
@@ -13,42 +16,43 @@ export class Event {
 
     dispose() {
         this.target = null;
-        this.disposed = true;
+        this.data = null;
+        super.dispose();
     }
 }
 
-export default class EventEmitter {
+export default class EventEmitter extends Disposable {
     constructor() {
+        super();
         this.subscribers = {};
-        this.disposed = false;
     }
 
-    on(event, fn) {
-        if (!this.subscribers.hasOwnProperty(event)) {
-            this.subscribers[event] = [];
+    on(eventName, fn) {
+        if (!this.subscribers.hasOwnProperty(eventName)) {
+            this.subscribers[eventName] = [];
         }
 
-        if (!this.subscribers[event].includes(fn)) {
-            this.subscribers[event].push(fn);
+        if (!this.subscribers[eventName].includes(fn)) {
+            this.subscribers[eventName].push(fn);
         }
     }
 
-    off(event, fn) {
-        if (event) {
-            if (this.subscribers.hasOwnProperty(event)) {
+    off(eventName, fn) {
+        if (eventName) {
+            if (this.subscribers.hasOwnProperty(eventName)) {
                 if (fn) {
-                    const index = this.subscribers[event].indexOf(fn);
+                    const index = this.subscribers[eventName].indexOf(fn);
 
                     if (index > -1) {
-                        this.subscribers[event].splice(index, 1);
+                        this.subscribers[eventName].splice(index, 1);
                     }
                 } else {
-                    delete this.subscribers[event];
+                    delete this.subscribers[eventName];
                 }
             }
         } else {
-            for (const event in this.subscribers) {
-                this.off(event);
+            for (const eventName in this.subscribers) {
+                this.off(eventName);
             }
         }
     }
@@ -59,7 +63,7 @@ export default class EventEmitter {
     }
 
     dispatch(event, disposeEventAfterDispatch = false) {
-        if (!event.disposed) {
+        if (!event.isDisposed) {
             event.target = event.target || this;
 
             if (this.subscribers.hasOwnProperty(event.name)) {
@@ -76,10 +80,8 @@ export default class EventEmitter {
     }
 
     dispose() {
-        if (!this.disposed) {
-            this.dispatch(new Event('dispose'));
-            this.off();
-            this.disposed = true;
-        }
+        this.dispatch(new Event('dispose'));
+        this.off();
+        super.dispose();
     }
 }

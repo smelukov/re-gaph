@@ -1,17 +1,21 @@
 import Layer from './layer.js';
 import Item from './item.js';
 import TransformationMatrix from './transformationMatrix.js';
-import handlePointerInputEvent from './pointerInputHandler.js';
+import BoundariesChecker from './boundariesChecker.js';
+import Input from './input.js';
+import Disposable from './disposable.js';
 
-export default class Engine {
+export default class Engine extends Disposable {
     constructor(render, input, viewport) {
+        super();
         this.render = render;
         this.frames = 0;
         this.fps = 0;
         this.lastFPSUpdate = 0;
         this.layers = {};
         this.orderedLayers = [];
-        this.input = Array.isArray(input) ? input : [input];
+        this.inputSources = Array.isArray(input) ? input : [input];
+        this.input = this.create(Input);
         this.setViewport(viewport);
         this.worldMatrix = new TransformationMatrix();
         this.worldMatrix.moveTo(viewport.width / 2, viewport.height / 2);
@@ -19,8 +23,7 @@ export default class Engine {
         this.render.setTransform(...this.worldMatrix.get());
         this.matrices = [];
         this.stage = this.create(Item, 0, 0);
-
-        handlePointerInputEvent(this);
+        this.boundariesChecker = this.create(BoundariesChecker);
     }
 
     screenToWorld(x, y) {
@@ -115,5 +118,20 @@ export default class Engine {
         this.render.setFont('12px Helvetica');
         this.render.fillText(`${this.fps} FPS`, 10, 30);
         this.render.restore();
+    }
+
+    dispose() {
+        this.stop();
+        this.stage.dispose();
+        this.stage = null;
+        this.input.dispose();
+        this.input = null;
+        this.inputSources.forEach(source => source.dispose());
+        this.inputSources = null;
+        this.render.dispose();
+        this.render = null;
+        this.boundariesChecker.dispose();
+        this.boundariesChecker = null;
+        super.dispose();
     }
 }

@@ -1,5 +1,8 @@
-export default class Canvas2DRender {
+import Disposable from '../disposable.js';
+
+export default class Canvas2DRender extends Disposable {
     constructor(ctx) {
+        super();
         this.ctx = ctx;
     }
 
@@ -77,5 +80,10 @@ export default class Canvas2DRender {
 
     fillText(string, x, y, maxWidth) {
         this.ctx.fillText(string, x, y, maxWidth);
+    }
+
+    dispose() {
+        this.ctx = null;
+        super.dispose();
     }
 }

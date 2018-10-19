@@ -1,4 +1,3 @@
-import { register as registerBoundingCheck, isInsidePoly, isInsideEllipse } from '../engine/boundariesCheck.js';
 import { applyRotation } from '../engine/utils.js';
 import Item from '../engine/item.js';
 
@@ -96,11 +95,3 @@ export class Triangle extends Shape {
         ];
     }
 }
-
-registerBoundingCheck([Quad, Triangle], (shape, x, y) => {
-    return isInsidePoly(x, y, shape.getLocalVertices());
-});
-
-registerBoundingCheck(Ellipse, (shape, x, y) => {
-    return isInsideEllipse(x, y, shape.width / 2, shape.height / 2, shape.angle);
-});

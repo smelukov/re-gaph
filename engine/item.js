@@ -5,7 +5,6 @@ import TransformationMatrix from './transformationMatrix.js';
 export default class Item extends EventEmitter {
     constructor(engine) {
         super();
-
         this.engine = engine;
         this.children = [];
         this.skipSelfDraw = false;
@@ -100,5 +99,14 @@ export default class Item extends EventEmitter {
 
     draw(render) {
         // empty
+    }
+
+    dispose() {
+        for (const child of this.children) {
+            child.parent = null;
+        }
+
+        this.children = null;
+        super.dispose();
     }
 }

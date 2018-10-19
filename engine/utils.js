@@ -1,6 +1,5 @@
-import { check as isPointInside } from './boundariesCheck.js';
-
 export const rad360Deg = 360 * Math.PI / 180;
+export const degToRad = 180 / Math.PI;
 
 export function applyRotation(x, y, angle) {
     return {
@@ -29,39 +28,4 @@ export function distanceSign(a, b, point) {
 
 export function pointAngle(a, b) {
     return Math.atan2(b.y - a.y, b.x - a.x)
-}
-
-export function itemByScreenCoordinates(screenX, screenY, engine) {
-    for (let i = engine.orderedLayers.length - 1; i >= 0; i--) {
-        const layer = engine.orderedLayers[i];
-        const item = findItemByScreenCoordinates(layer.items, screenX, screenY);
-
-        if (item) {
-            item.layer = layer;
-
-            return item;
-        }
-    }
-
-    return null;
-}
-
-export function findItemByScreenCoordinates(items, screenX, screenY) {
-    for (let i = items.length - 1; i >= 0; i--) {
-        const item = items[i];
-        const childrenItem = findItemByScreenCoordinates(item.children, screenX, screenY);
-
-        if (childrenItem) {
-            return childrenItem;
-        }
-
-        const itemWorldPosition = item.worldPosition();
-        const screenLocalPosition = { x: screenX - itemWorldPosition.x, y: screenY - itemWorldPosition.y };
-
-        if (isPointInside(screenLocalPosition.x, screenLocalPosition.y, item)) {
-            return { item, offset: { x: item.x - screenX, y: item.y - screenY } };
-        }
-    }
-
-    return null;
 }
