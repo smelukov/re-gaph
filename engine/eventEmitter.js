@@ -28,30 +28,38 @@ export default class EventEmitter extends Disposable {
     }
 
     on(eventName, fn) {
-        if (!this.subscribers.hasOwnProperty(eventName)) {
-            this.subscribers[eventName] = [];
+        const { subscribers } = this;
+
+        if (!subscribers.hasOwnProperty(eventName)) {
+            subscribers[eventName] = [];
         }
 
-        if (!this.subscribers[eventName].includes(fn)) {
-            this.subscribers[eventName].push(fn);
+        if (!subscribers[eventName].includes(fn)) {
+            subscribers[eventName].push(fn);
         }
     }
 
     off(eventName, fn) {
+        const { subscribers } = this;
+
         if (eventName) {
-            if (this.subscribers.hasOwnProperty(eventName)) {
+            if (subscribers.hasOwnProperty(eventName)) {
                 if (fn) {
-                    const index = this.subscribers[eventName].indexOf(fn);
+                    const index = subscribers[eventName].indexOf(fn);
 
                     if (index > -1) {
-                        this.subscribers[eventName].splice(index, 1);
+                        subscribers[eventName].splice(index, 1);
+
+                        if (!subscribers[eventName].length) {
+                            delete subscribers[eventName];
+                        }
                     }
                 } else {
-                    delete this.subscribers[eventName];
+                    delete subscribers[eventName];
                 }
             }
         } else {
-            for (const eventName in this.subscribers) {
+            for (const eventName in subscribers) {
                 this.off(eventName);
             }
         }
@@ -64,11 +72,12 @@ export default class EventEmitter extends Disposable {
 
     dispatch(event, disposeEventAfterDispatch = false) {
         if (!event.isDisposed) {
+            const { subscribers } = this;
+
             event.target = event.target || this;
 
-            if (this.subscribers.hasOwnProperty(event.name)) {
-
-                for (const fn of this.subscribers[event.name]) {
+            if (subscribers.hasOwnProperty(event.name)) {
+                for (const fn of subscribers[event.name]) {
                     fn.call(event.target, event);
                 }
 

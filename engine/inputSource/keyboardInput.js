@@ -17,7 +17,12 @@ export default class KeyboardInput extends EventEmitter {
                         key: e.key,
                         code: e.keyCode,
                         altKey: e.altKey,
-                        ctrlKey: e.ctrlKey
+                        ctrlKey: e.ctrlKey,
+                        metaKey: e.metaKey,
+                        shiftKey: e.shiftKey,
+                        prevent() {
+                            e.preventDefault();
+                        }
                     });
 
                     this.dispatch(event, true);

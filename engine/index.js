@@ -43,7 +43,7 @@ export default class Engine extends Disposable {
         const layer = new Layer();
 
         this.layers[name] = layer;
-        this.orderedLayers.splice(this.orderedLayers.length, 0, layer);
+        this.orderedLayers.push(layer);
 
         return layer;
     }

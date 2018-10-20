@@ -43,6 +43,9 @@ engine.start();
 engine.stage.on('key-down', e => {
     if (e.data.key === 'Escape' && currentShape) {
         unselectShape(currentShape);
+    } else if (e.data.key.toLowerCase() === 's' && e.data.metaKey) {
+        e.data.prevent();
+        saveImage();
     }
 });
 
@@ -113,6 +116,7 @@ function createShape(Class, x, y) {
 function onResize() {
     canvasNode.width = window.innerWidth;
     canvasNode.height = window.innerHeight;
+    engine.setViewport({ width: window.innerWidth, height: window.innerHeight });
 }
 
 function selectShape(shape) {
@@ -153,4 +157,17 @@ function fitMarkers(shape) {
     if (resizeMarkers) {
         resizeMarkers.fitToShape();
     }
+}
+
+function saveImage() {
+    const element = document.createElement('a');
+    const image = canvasNode.toDataURL();
+
+    element.setAttribute('href', image);
+    element.setAttribute('download', 'image.png');
+    element.style.display = 'none';
+
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
 }
