@@ -1,5 +1,5 @@
-import { applyRotation } from '../engine/utils.js';
-import Item from '../engine/item.js';
+import { applyRotation } from '../../engine/utils.js';
+import Item from '../../engine/item.js';
 
 export class Shape extends Item {
     init(x, y, width, height) {

@@ -1,12 +1,12 @@
 import * as shapes from './shapes.js';
 import ResizeMarkers from './resizeMarkers.js';
-import MouseInput from '../engine/inputSource/mouseInput.js';
-import TouchInput from '../engine/inputSource/touchInput.js';
-import KeyboardInput from '../engine/inputSource/keyboardInput.js';
-import Canvas2DRender from '../engine/renderer/canvas2dRender.js';
-import Engine from '../engine/index.js';
-import DnD from '../engine/dnd.js';
-import { isInsideEllipse, isInsidePoly } from '../engine/boundariesChecker.js';
+import MouseInput from '../../engine/inputSource/mouseInput.js';
+import TouchInput from '../../engine/inputSource/touchInput.js';
+import KeyboardInput from '../../engine/inputSource/keyboardInput.js';
+import Canvas2DRender from '../../engine/renderer/canvas2dRender.js';
+import Engine from '../../engine/index.js';
+import DnD from '../../engine/dnd.js';
+import { isInsideEllipse, isInsidePoly } from '../../engine/boundariesChecker.js';
 
 const shapesListNode = document.querySelector('.shapes');
 const canvasNode = document.querySelector('#myCanvas');
@@ -50,7 +50,7 @@ engine.stage.on('key-down', e => {
 });
 
 engine.stage.on('pointer-start', e => {
-    if (e.target === engine.stage) {
+    if (e.target === engine.stage && currentShape) {
         unselectShape(currentShape);
     }
 });

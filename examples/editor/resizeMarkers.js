@@ -1,7 +1,7 @@
 import { Quad } from './shapes.js';
 import Marker from './resizeMarker.js';
-import DnD from '../engine/dnd.js';
-import { distance as getDistance } from '../engine/utils.js';
+import DnD from '../../engine/dnd.js';
+import { distance as getDistance } from '../../engine/utils.js';
 
 export default class ResizeMarkers extends Quad {
     init(shape, markerSize) {

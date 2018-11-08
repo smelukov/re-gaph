@@ -5,7 +5,7 @@ export default class DnD extends EventEmitter {
     constructor(engine, target) {
         super();
         this.engine = engine;
-        this.mouseDownHandler = (e) => {
+        this.pointerStartHandler = (e) => {
             const worldPosition = engine.screenToWorld(e.data.x, e.data.y);
 
             this.isDragging = true;
@@ -18,7 +18,7 @@ export default class DnD extends EventEmitter {
                 yWithOffset: worldPosition.y + this.offset.y
             }), true);
         };
-        this.mouseUpHandler = e => {
+        this.pointerEndHandler = e => {
             if (this.isDragging) {
                 const worldPosition = engine.screenToWorld(e.data.x, e.data.y);
 
@@ -37,7 +37,7 @@ export default class DnD extends EventEmitter {
         };
         this.disposeHandler = () => this.setTarget(null);
 
-        this.stageMouseMoveHandler = e => {
+        this.stagePointerMoveHandler = e => {
             if (this.isDragging) {
                 const worldPosition = engine.screenToWorld(e.data.x, e.data.y);
 
@@ -52,8 +52,8 @@ export default class DnD extends EventEmitter {
                 }), true);
             }
         };
-        this.engine.stage.on('pointer-move', this.stageMouseMoveHandler);
-        this.engine.stage.on('pointer-end', this.mouseUpHandler);
+        this.engine.stage.on('pointer-move', this.stagePointerMoveHandler);
+        this.engine.stage.on('pointer-end', this.pointerEndHandler);
 
         this.setTarget(target);
     }
@@ -64,8 +64,8 @@ export default class DnD extends EventEmitter {
 
     setTarget(target) {
         if (this.target) {
-            this.target.off('pointer-start', this.mouseDownHandler);
-            this.target.off('pointer-end', this.mouseUpHandler);
+            this.target.off('pointer-start', this.pointerStartHandler);
+            this.target.off('pointer-end', this.pointerEndHandler);
             this.target.off('dispose', this.disposeHandler);
         }
 
@@ -75,14 +75,14 @@ export default class DnD extends EventEmitter {
             return;
         }
 
-        target.on('pointer-start', this.mouseDownHandler);
-        target.on('pointer-end', this.mouseUpHandler);
+        target.on('pointer-start', this.pointerStartHandler);
+        target.on('pointer-end', this.pointerEndHandler);
         target.on('dispose', this.disposeHandler);
     }
 
     dispose() {
-        this.engine.stage.off('pointer-move', this.stageMouseMoveHandler);
-        this.engine.stage.off('pointer-end', this.mouseUpHandler);
+        this.engine.stage.off('pointer-move', this.stagePointerMoveHandler);
+        this.engine.stage.off('pointer-end', this.pointerEndHandler);
         this.engine = null;
         this.setTarget(null);
         super.dispose();
