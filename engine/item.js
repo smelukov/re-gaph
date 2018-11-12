@@ -88,12 +88,29 @@ export default class Item extends EventEmitter {
         return angle;
     }
 
-    addChildren(...children) {
-        for (let i = 0; i < children.length; i++) {
-            const child = children[i];
+    setChildren(children) {
+        for (const child of children) {
+            this.addChild(child);
+        }
+    }
+
+    addChild(child) {
+        if (!this.children.includes(child)) {
+            if (child.parent) {
+                child.parent.removeChild(child);
+            }
 
             child.parent = this;
             this.children.push(child);
+        }
+    }
+
+    removeChild(child) {
+        const index = this.children.indexOf(child);
+
+        if (index > -1) {
+            this.children.splice(index, 1);
+            child.parent = null;
         }
     }
 

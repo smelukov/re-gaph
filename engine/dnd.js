@@ -37,7 +37,7 @@ export default class DnD extends EventEmitter {
         };
         this.disposeHandler = () => this.setTarget(null);
 
-        this.stagePointerMoveHandler = e => {
+        this.scenePointerMoveHandler = e => {
             if (this.isDragging) {
                 const worldPosition = engine.screenToWorld(e.data.x, e.data.y);
 
@@ -52,8 +52,8 @@ export default class DnD extends EventEmitter {
                 }), true);
             }
         };
-        this.engine.stage.on('pointer-move', this.stagePointerMoveHandler);
-        this.engine.stage.on('pointer-end', this.pointerEndHandler);
+        this.engine.scene.on('pointer-move', this.scenePointerMoveHandler);
+        this.engine.scene.on('pointer-end', this.pointerEndHandler);
 
         this.setTarget(target);
     }
@@ -81,8 +81,8 @@ export default class DnD extends EventEmitter {
     }
 
     dispose() {
-        this.engine.stage.off('pointer-move', this.stagePointerMoveHandler);
-        this.engine.stage.off('pointer-end', this.pointerEndHandler);
+        this.engine.scene.off('pointer-move', this.scenePointerMoveHandler);
+        this.engine.scene.off('pointer-end', this.pointerEndHandler);
         this.engine = null;
         this.setTarget(null);
         super.dispose();

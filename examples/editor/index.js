@@ -15,8 +15,8 @@ const canvas2DRender = new Canvas2DRender(ctx);
 const isTouchDevice = window.hasOwnProperty('ontouchstart');
 const input = [new KeyboardInput(canvasNode.parentNode), isTouchDevice ? new TouchInput(canvasNode) : new MouseInput(canvasNode)];
 const engine = new Engine(canvas2DRender, input, { width: canvasNode.clientWidth, height: canvasNode.clientHeight });
-const shapesLayer = engine.createLayer('shapes');
-const markersLayer = engine.createLayer('markers');
+const shapesLayer = engine.create.item();
+const markersLayer = engine.create.item();
 const shapeMap = {
     ellipse: shapes.Ellipse,
     quad: shapes.Quad,
@@ -33,29 +33,30 @@ const resizeMarkersMap = new Map();
 engine.boundariesChecker.register([shapes.Quad, shapes.Triangle], (shape, x, y) => {
     return isInsidePoly(x, y, shape.getLocalVertices());
 });
-
 engine.boundariesChecker.register(shapes.Ellipse, (shape, x, y) => {
     return isInsideEllipse(x, y, shape.width / 2, shape.height / 2, shape.angle);
 });
 
+
+engine.scene.setChildren([shapesLayer, markersLayer]);
 engine.start();
 
-engine.stage.on('key-down', e => {
+engine.scene.on('key-down', e => {
     if (e.data.key === 'Escape' && currentShape) {
         unselectShape(currentShape);
     } else if (e.data.key.toLowerCase() === 's' && e.data.metaKey) {
-        e.data.prevent();
+        e.originalEvent.preventDefault();
         saveImage();
     }
 });
 
-engine.stage.on('pointer-start', e => {
-    if (e.target === engine.stage && currentShape) {
+engine.scene.on('pointer-start', e => {
+    if (e.target === engine.scene && currentShape) {
         unselectShape(currentShape);
     }
 });
 
-engine.stage.on('pointer-scroll', e => {
+engine.scene.on('pointer-scroll', e => {
     if (currentShape) {
         const angle = currentShape.angle + e.data.deltaY / 100;
 
@@ -64,7 +65,7 @@ engine.stage.on('pointer-scroll', e => {
     }
 });
 
-engine.stage.on('pointer-zoom', e => {
+engine.scene.on('pointer-zoom', e => {
     if (currentShape) {
         const width = currentShape.width + e.data.factor;
         const height = currentShape.height + e.data.factor;
@@ -81,7 +82,7 @@ shapesListNode.addEventListener('click', e => {
         const shapeClass = shapeMap[shapeName];
         const shape = createShape(shapeClass, 0, 0);
 
-        shapesLayer.add(shape);
+        shapesLayer.addChild(shape);
         selectShape(shape);
     }
 });
@@ -124,14 +125,14 @@ function selectShape(shape) {
         const resizeMarkers = resizeMarkersMap.get(currentShape);
 
         if (resizeMarkers) {
-            markersLayer.remove(resizeMarkers);
+            markersLayer.removeChild(resizeMarkers);
         }
     }
 
     const resizeMarkers = engine.create(ResizeMarkers, shape, 7);
 
     resizeMarkersMap.set(shape, resizeMarkers);
-    markersLayer.add(resizeMarkers);
+    markersLayer.addChild(resizeMarkers);
 
     currentShape = shape;
 }
@@ -142,7 +143,7 @@ function unselectShape(shape) {
     shape.dnd.cancel();
 
     if (resizeMarkers) {
-        markersLayer.remove(resizeMarkers);
+        markersLayer.removeChild(resizeMarkers);
         resizeMarkers.dispose();
         resizeMarkersMap.delete(shape);
     }

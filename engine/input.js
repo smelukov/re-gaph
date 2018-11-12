@@ -13,36 +13,41 @@ export default class Input extends Creatable {
 
     handler(event) {
         if (event.name.startsWith('pointer-')) {
-            this.pointerHandler(event);
+            this.handlePointer(event);
         } else if (event.name.startsWith('key-')) {
-            event.target = null;
-        }
-
-        if (!event.stopped && event.target !== this.engine.stage) {
-            this.engine.stage.dispatch(event);
+            this.handleKey(event);
         }
     }
 
-    pointerHandler(event) {
+    handlePointer(event) {
         const worldPosition = this.engine.screenToWorld(event.data.x, event.data.y);
         let data = this.engine.boundariesChecker.find(worldPosition.x, worldPosition.y);
 
         if (!data) {
             data = {
-                item: this.engine.stage,
-                layer: null,
+                item: this.engine.scene,
                 offset: {
-                    x: this.engine.stage.x - event.data.x,
-                    y: this.engine.stage.y - event.data.y
+                    x: this.engine.scene.x - event.data.x,
+                    y: this.engine.scene.y - event.data.y
                 }
-            };
+            }
         }
 
-        event.data.item = data.item;
-        event.data.layer = data.layer;
-        event.data.offset = data.offset;
         event.target = data.item;
-        data.item.dispatch(event);
+        event.data.item = data.item;
+        event.data.offset = data.offset;
+
+        let cursor = data.item;
+
+        while (cursor && !event.stopped) {
+            cursor.dispatch(event);
+            cursor = cursor.parent;
+        }
+    }
+
+    handleKey(event) {
+        event.target = this.engine.scene;
+        this.engine.scene.dispatch(event);
     }
 
     dispose() {

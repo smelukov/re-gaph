@@ -35,7 +35,7 @@ export default class TouchInput extends EventEmitter {
                 }
 
                 for (const touch of changedTouches) {
-                    const eventData = { ...touch };
+                    const eventData = { originalEvent: e, ...touch };
 
                     if (type === 'start') {
                         touchData[touch.pointerId] = touch;

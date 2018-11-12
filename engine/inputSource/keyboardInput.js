@@ -15,14 +15,11 @@ export default class KeyboardInput extends EventEmitter {
                 if (e.target === node) {
                     const event = new Event('key-' + type, {
                         key: e.key,
-                        code: e.keyCode,
                         altKey: e.altKey,
                         ctrlKey: e.ctrlKey,
                         metaKey: e.metaKey,
                         shiftKey: e.shiftKey,
-                        prevent() {
-                            e.preventDefault();
-                        }
+                        originalEvent: e
                     });
 
                     this.dispatch(event, true);

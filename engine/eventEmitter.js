@@ -8,6 +8,9 @@ export class Event extends Disposable {
         this.data = data;
         this.target = null;
         this.stopped = false;
+        this.warnAliveTimout = setTimeout(() => {
+            console.warn('The event lives too long', this);
+        }, 1000);
     }
 
     stop() {
@@ -15,6 +18,7 @@ export class Event extends Disposable {
     }
 
     dispose() {
+        clearTimeout(this.warnAliveTimout);
         this.target = null;
         this.data = null;
         super.dispose();
@@ -80,16 +84,16 @@ export default class EventEmitter extends Disposable {
                 for (const fn of subscribers[event.name]) {
                     fn.call(event.target, event);
                 }
+            }
 
-                if (disposeEventAfterDispatch) {
-                    event.dispose();
-                }
+            if (disposeEventAfterDispatch) {
+                event.dispose();
             }
         }
     }
 
     dispose() {
-        this.dispatch(new Event('dispose'));
+        this.dispatch(new Event('dispose'), true);
         this.off();
         super.dispose();
     }

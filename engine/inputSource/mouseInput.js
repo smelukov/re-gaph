@@ -17,7 +17,12 @@ export default class MouseInput extends EventEmitter {
                     type = e.ctrlKey ? 'zoom' : 'scroll'
                 }
 
-                const event = new Event('pointer-' + type, { x: e.clientX, y: e.clientY, pointerId: 0 });
+                const event = new Event('pointer-' + type, {
+                    originalEvent: e,
+                    x: e.clientX,
+                    y: e.clientY,
+                    pointerId: 0
+                });
 
                 if (type === 'zoom') {
                     event.data.factor = -e.deltaY;

@@ -36,18 +36,8 @@ export default class BoundariesChecker extends Creatable {
     }
 
     find(worldX, worldY) {
-        for (let i = this.engine.orderedLayers.length - 1; i >= 0; i--) {
-            const layer = this.engine.orderedLayers[i];
-            const item = this.findInItems(layer.items, worldX, worldY);
-
-            if (item) {
-                item.layer = layer;
-
-                return item;
-            }
-        }
-
-        return null;
+        const item = this.findInItems(this.engine.scene.children, worldX, worldY);
+        return item || null;
     }
 
     findInItems(items, worldX, worldY) {

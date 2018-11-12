@@ -1,4 +1,3 @@
-import Layer from './layer.js';
 import Item from './item.js';
 import TransformationMatrix from './transformationMatrix.js';
 import BoundariesChecker from './boundariesChecker.js';
@@ -12,17 +11,16 @@ export default class Engine extends Disposable {
         this.frames = 0;
         this.fps = 0;
         this.lastFPSUpdate = 0;
-        this.layers = {};
-        this.orderedLayers = [];
         this.inputSources = Array.isArray(input) ? input : [input];
         this.input = this.create(Input);
+        this.create.item = (x, y, angle) => this.create(Item, x, y, angle);
         this.setViewport(viewport);
         this.worldMatrix = new TransformationMatrix();
         this.worldMatrix.moveTo(viewport.width / 2, viewport.height / 2);
         this.currentMatrix = this.worldMatrix;
         this.render.setTransform(...this.worldMatrix.get());
         this.matrices = [];
-        this.stage = this.create(Item, 0, 0);
+        this.scene = this.create.item(0, 0);
         this.boundariesChecker = this.create(BoundariesChecker);
     }
 
@@ -37,15 +35,6 @@ export default class Engine extends Disposable {
         const instance = new Class(this);
         instance.init(...args);
         return instance;
-    }
-
-    createLayer(name) {
-        const layer = new Layer();
-
-        this.layers[name] = layer;
-        this.orderedLayers.push(layer);
-
-        return layer;
     }
 
     setViewport(viewport) {
@@ -87,13 +76,7 @@ export default class Engine extends Disposable {
     renderFrame() {
         this.rafId = requestAnimationFrame(() => {
             this.clear();
-
-            for (const { items } of this.orderedLayers) {
-                for (const item of items) {
-                    this.renderItem(item);
-                }
-            }
-
+            this.renderItem(this.scene);
             this.renderFrame();
 
             /////////////////////
@@ -122,8 +105,8 @@ export default class Engine extends Disposable {
 
     dispose() {
         this.stop();
-        this.stage.dispose();
-        this.stage = null;
+        this.scene.dispose();
+        this.scene = null;
         this.input.dispose();
         this.input = null;
         this.inputSources.forEach(source => source.dispose());

@@ -25,15 +25,16 @@ export default class ResizeMarkers extends Quad {
             middleLeft: this.createMarker(true)
         };
 
-        this.addChildren(
-            this.markers.topLeft,
-            this.markers.topMiddle,
-            this.markers.topRight,
-            this.markers.middleRight,
-            this.markers.bottomRight,
-            this.markers.bottomMiddle,
-            this.markers.bottomLeft,
-            this.markers.middleLeft
+        this.setChildren([
+                this.markers.topLeft,
+                this.markers.topMiddle,
+                this.markers.topRight,
+                this.markers.middleRight,
+                this.markers.bottomRight,
+                this.markers.bottomMiddle,
+                this.markers.bottomLeft,
+                this.markers.middleLeft
+            ]
         );
 
         this.fitToShape();
