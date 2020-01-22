@@ -1,10 +1,11 @@
 import Creatable from './creatable.js';
 
 export default class Input extends Creatable {
-  init() {
+  init(sources) {
+    this.sources = sources;
     this.handlerFn = this.handler.bind(this);
 
-    for (const input of this.engine.inputSources) {
+    for (const input of this.sources) {
       for (const event of input.getSupportedEvents()) {
         input.on(event, this.handlerFn);
       }
@@ -51,7 +52,7 @@ export default class Input extends Creatable {
   }
 
   dispose() {
-    for (const input of this.engine.inputSources) {
+    for (const input of this.sources) {
       for (const event of input.getSupportedEvents()) {
         input.off(event, this.handlerFn);
       }

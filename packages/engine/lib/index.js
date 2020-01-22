@@ -12,8 +12,7 @@ export default class Engine extends Disposable {
     this.frames = 0;
     this.fps = 0;
     this.lastFPSUpdate = 0;
-    this.inputSources = Array.isArray(input) ? input : [input];
-    this.input = this.create(Input);
+    this.input = this.create(Input, input);
     this.create.item = (x, y, angle) => this.create(Item, x, y, angle);
     this.setViewport(viewport);
     this.worldMatrix = new TransformationMatrix();
@@ -110,8 +109,6 @@ export default class Engine extends Disposable {
     this.scene = null;
     this.input.dispose();
     this.input = null;
-    this.inputSources.forEach(source => source.dispose());
-    this.inputSources = null;
     this.render.dispose();
     this.render = null;
     this.boundariesChecker.dispose();
