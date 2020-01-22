@@ -1,0 +1,29 @@
+{
+  "name": "@regraph/dnd",
+  "version": "1.0.0",
+  "description": "Regraph DnD implementation",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smelukov/regraph.git"
+  },
+  "author": {
+    "name": "Serget Melyukov",
+    "url": "https://twitter.com/smelukov"
+  },
+  "bugs": {
+    "url": "https://github.com/smelukov/regraph/issues"
+  },
+  "homepage": "https://github.com/smelukov/regraph#readme",
+  "dependencies": {
+    "@regraph/events": "^1.0.0",
+    "@regraph/utils": "^1.0.0"
+  }
+}

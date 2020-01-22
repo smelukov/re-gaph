@@ -1,0 +1,31 @@
+{
+  "name": "@example/editor",
+  "private": true,
+  "description": "Vector editor based on Regraph",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smelukov/regraph.git"
+  },
+  "author": {
+    "name": "Serget Melyukov",
+    "url": "https://twitter.com/smelukov"
+  },
+  "bugs": {
+    "url": "https://github.com/smelukov/regraph/issues"
+  },
+  "homepage": "https://github.com/smelukov/regraph#readme",
+  "dependencies": {
+    "@regraph/dnd": "^1.0.0",
+    "@regraph/engine": "^1.0.0",
+    "@regraph/utils": "^1.0.0"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
+    "webpack-dev-server": "^3.10.1"
+  }
+}
